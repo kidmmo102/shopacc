@@ -1,0 +1,290 @@
+# Create a ready-to-upload static site folder with index.html, robots.txt, and sitemap.xml
+import os, zipfile, textwrap, datetime
+
+site_root = "/mnt/data/shopacc_site"
+os.makedirs(site_root, exist_ok=True)
+
+username_placeholder = "YOUR_GITHUB_USERNAME"
+repo_name = "shopacc"
+site_url_placeholder = f"https://{username_placeholder}.github.io/{repo_name}/"
+
+index_html = f"""<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop ACC Liên Quân - Giá rẻ, uy tín</title>
+  <meta name="description" content="Shop ACC Liên Quân giá rẻ, uy tín. Tài khoản đa dạng rank, tướng, trang phục. Liên hệ Zalo để mua nhanh!">
+  <link rel="canonical" href="{site_url_placeholder}">
+  <!-- Open Graph for social share -->
+  <meta property="og:title" content="Shop ACC Liên Quân - Giá rẻ, uy tín" />
+  <meta property="og:description" content="Kho ACC LQ chất lượng. Mua nhanh - Giao dịch an toàn." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{site_url_placeholder}" />
+  <meta property="og:image" content="https://i.imgur.com/OdL0XPt.jpeg" />
+  <!-- Replace the content value below with the HTML tag from Google Search Console to verify ownership -->
+  <!-- <meta name="google-site-verification" content="PASTE_YOUR_TOKEN_HERE" /> -->
+  <style>
+    :root {{
+      --primary: #ff4757;
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --text: #333;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }}
+    header {{
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 28px 16px;
+    }}
+    header h1 {{ margin: 0 0 6px 0; font-size: 28px; }}
+    nav {{
+      background: #222;
+      color: white;
+      display: flex;
+      gap: 12px;
+      padding: 10px 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }}
+    nav a {{
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }}
+    nav a:hover {{ background: rgba(255,255,255,0.1); }}
+    .container {{
+      width: 95%;
+      max-width: 1200px;
+      margin: 18px auto 32px;
+    }}
+    .hero {{
+      background: linear-gradient(135deg, #ffe6e8, #fff);
+      border: 1px solid #f0c5ca;
+      padding: 16px;
+      border-radius: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }}
+    .hero h2 {{ margin: 0; }}
+    .hero p {{ margin: 0; opacity: .9; }}
+    .grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 16px;
+    }}
+    .card {{
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      transition: transform .25s ease;
+      border: 1px solid #eee;
+    }}
+    .card:hover {{ transform: translateY(-4px); }}
+    .card img {{
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #eee;
+      background: #fafafa;
+    }}
+    .price {{
+      color: var(--primary);
+      font-size: 18px;
+      font-weight: 800;
+      margin: 10px 0 6px;
+    }}
+    .pill {{
+      display: inline-block;
+      background: #ffe5e8;
+      color: #8c1f29;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid #ffd1d7;
+    }}
+    .btn {{
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-weight: 700;
+      width: 100%;
+    }}
+    .btn:hover {{ filter: brightness(.96); }}
+    footer {{
+      text-align: center;
+      padding: 18px;
+      background: #111;
+      color: #ddd;
+    }}
+    .note {{ font-size: 12px; opacity: .75; }}
+    .searchbox {{
+      display: grid; grid-template-columns: 1fr 120px; gap: 10px; margin-top: 12px;
+    }}
+    input[type="text"] {{
+      padding: 10px 12px; border-radius: 10px; border: 1px solid #ddd;
+    }}
+    select {{
+      padding: 10px 12px; border-radius: 10px; border: 1px solid #ddd;
+    }}
+    @media (max-width: 520px){{
+      .searchbox {{ grid-template-columns: 1fr; }}
+    }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔥 Shop ACC Liên Quân 🔥</h1>
+    <div class="note">Uy tín - Giá rẻ - Giao dịch nhanh (demo miễn phí)</div>
+  </header>
+
+  <nav>
+    <a href="#acc">Danh sách ACC</a>
+    <a href="#huongdan">Hướng dẫn mua</a>
+    <a href="#lienhe">Liên hệ</a>
+  </nav>
+
+  <div class="container">
+    <section class="hero">
+      <div>
+        <h2>Kho ACC nổi bật</h2>
+        <p>Tìm kiếm nhanh theo rank, giá và số tướng.</p>
+      </div>
+      <div class="searchbox">
+        <input id="q" type="text" placeholder="Tìm theo từ khóa: Cao Thủ, Sinh viên, VIP..." oninput="render()">
+        <select id="price">
+          <option value="">Lọc theo giá</option>
+          <option value="<=100000">≤ 100k</option>
+          <option value="<=200000">≤ 200k</option>
+          <option value=">200000">> 200k</option>
+        </select>
+      </div>
+    </section>
+
+    <section id="acc">
+      <div class="grid" id="list"></div>
+    </section>
+
+    <section id="huongdan" style="margin-top:28px;">
+      <h2>Hướng dẫn mua</h2>
+      <ol>
+        <li>Chọn ACC phù hợp và bấm <b>Mua ngay</b>.</li>
+        <li>Liên hệ Zalo/Email bên dưới, gửi <b>Mã ACC</b> cho shop.</li>
+        <li>Thanh toán &amp; nhận thông tin đăng nhập.</li>
+      </ol>
+    </section>
+
+    <section id="lienhe" style="margin-top:28px;">
+      <h2>Liên hệ</h2>
+      <p>Zalo: <a href="https://zalo.me/0123456789" target="_blank" rel="noopener">0123456789</a> &nbsp;|&nbsp; Email: <a href="mailto:shopacc@example.com">shopacc@example.com</a></p>
+    </section>
+  </div>
+
+  <footer>
+    <p>© 2025 Shop ACC Liên Quân (Demo). Website tĩnh chạy trên GitHub Pages.</p>
+  </footer>
+
+  <script>
+    // Demo data – hãy thay bằng dữ liệu thật
+    const ACCS = [
+      {{ id: "ACC001", name: "Acc VIP #1", rank: "Cao Thủ", champs: 120, skins: 300, price: 500000, img: "https://i.imgur.com/OdL0XPt.jpeg", tag: "VIP" }},
+      {{ id: "ACC002", name: "Acc Săn Sale #2", rank: "Tinh Anh", champs: 60, skins: 120, price: 150000, img: "https://i.imgur.com/MnZQ8CE.jpeg", tag: "Giá rẻ" }},
+      {{ id: "ACC003", name: "Acc Sinh Viên #3", rank: "Bạch Kim", champs: 40, skins: 50, price: 50000, img: "https://i.imgur.com/tLNkCbO.jpeg", tag: "Sinh viên" }},
+      {{ id: "ACC004", name: "Acc Cày Thuê #4", rank: "Kim Cương", champs: 80, skins: 140, price: 220000, img: "https://i.imgur.com/tLNkCbO.jpeg", tag: "Cân bằng" }}
+    ];
+
+    function formatVND(n) {{
+      return n.toLocaleString('vi-VN') + ' VNĐ';
+    }}
+
+    function render() {{
+      const list = document.getElementById('list');
+      const q = (document.getElementById('q').value || '').toLowerCase().trim();
+      const priceFilter = document.getElementById('price').value;
+      let items = ACCS.filter(acc => !q || (acc.name + ' ' + acc.rank + ' ' + acc.tag).toLowerCase().includes(q));
+
+      if (priceFilter) {{
+        if (priceFilter === "<=100000") items = items.filter(a => a.price <= 100000);
+        if (priceFilter === "<=200000") items = items.filter(a => a.price <= 200000);
+        if (priceFilter === ">200000") items = items.filter(a => a.price > 200000);
+      }}
+
+      list.innerHTML = items.map(acc => `
+        <div class="card">
+          <div class="pill">${{acc.tag}}</div>
+          <img src="${{acc.img}}" alt="${{acc.name}}">
+          <h3>${{acc.name}}</h3>
+          <p>Rank: <b>${{acc.rank}}</b><br>Tướng: ${{acc.champs}} • Trang phục: ${{acc.skins}}</p>
+          <p class="price">${{formatVND(acc.price)}}</p>
+          <button class="btn" onclick="buy('${{acc.id}}')">Mua ngay</button>
+          <div class="note">Mã ACC: ${{acc.id}}</div>
+        </div>
+      `).join('');
+    }}
+
+    function buy(id) {{
+      const acc = ACCS.find(a => a.id === id);
+      const msg = `Xin chào, tôi muốn mua ${{acc.name}} (Mã: ${{acc.id}}), giá ${{formatVND(acc.price)}}.`;
+      // Mở Zalo hoặc mail - thay số ĐT/email của bạn ở phần Liên hệ phía trên
+      window.open('mailto:shopacc@example.com?subject=Mua%20ACC%20' + encodeURIComponent(acc.id) + '&body=' + encodeURIComponent(msg), '_blank');
+    }}
+
+    render();
+  </script>
+</body>
+</html>
+"""
+
+robots_txt = textwrap.dedent(f"""
+User-agent: *
+Allow: /
+
+Sitemap: {site_url_placeholder}sitemap.xml
+""").strip()
+
+now_date = datetime.date.today().isoformat()
+sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{site_url_placeholder}</loc>
+    <lastmod>{now_date}</lastmod>
+    <priority>1.00</priority>
+  </url>
+</urlset>
+"""
+
+# Write files
+with open(os.path.join(site_root, "index.html"), "w", encoding="utf-8") as f:
+    f.write(index_html)
+
+with open(os.path.join(site_root, "robots.txt"), "w", encoding="utf-8") as f:
+    f.write(robots_txt)
+
+with open(os.path.join(site_root, "sitemap.xml"), "w", encoding="utf-8") as f:
+    f.write(sitemap_xml)
+
+# Zip everything
+zip_path = "/mnt/data/shopacc_site.zip"
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for fn in ["index.html", "robots.txt", "sitemap.xml"]:
+        z.write(os.path.join(site_root, fn), arcname=fn)
+
+zip_path
